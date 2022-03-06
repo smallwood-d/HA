@@ -6,7 +6,7 @@
       "rootDir": ".",
       "noImplicitAny": true,
       "esModuleInterop": true,
-      "module": "CommonJS",
+      "module": "ES2020",
       "composite": true,
       "sourceMap": true,
       "resolveJsonModule": true
