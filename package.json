@@ -1,0 +1,25 @@
+{
+  "name": "enso",
+  "version": "1.0.0",
+  "description": "enso HA",
+  "main": "dist/src/index.js",
+  "scripts": {
+    "build": "tsc --extendedDiagnostics --pretty",
+    "start": "node dist/src/index.js -s",
+    "dev": "tsc-watch --project . --outDir ./dist --onSuccess \"npm run start\"",
+    "clean": "del-cli -f dist",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "files": [
+    "dist"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.21",
+    "typescript": "^4.6.2"
+  }
+}
