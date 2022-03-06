@@ -139,7 +139,7 @@ import { HADB } from './db';
     }
 
     /**
-     * create an new oage in the db,
+     * create  a new ent in the db,
      */
     private async create(rec: Record<string, any>, collection: string): Promise<boolean> {
         const result = await this.client.db(this.db)
@@ -148,7 +148,7 @@ import { HADB } from './db';
     }
 
     /**
-     * create an new oage in the db,
+     * create an new  deployment  in the DB.
      */
     private async update(rec: Record<string, any>, query : Record<string, any>, collection: string, upsert: boolean = false): Promise<boolean> {
         const recUpdate = { $set: rec };
