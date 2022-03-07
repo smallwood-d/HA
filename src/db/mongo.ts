@@ -84,14 +84,14 @@ import { HADB } from './db';
      * reutne all the images in the DB.
      */
     public getAllImages(): Promise<image[]> {
-
+        return;
     }
 
     /**
      * combination of all the images
      */
     public getCombo(): Promise<image[]> {
-
+        return;
     }
     
     /**
@@ -128,14 +128,14 @@ import { HADB } from './db';
      * return all the deployments
      */
     public getAllDeployments(): Promise<deployment[]> {
-
+        return;
     }
     
     /**
      * retuen number of deployments in the DB.
      */
     public countDeployment(): Promise<number> {
-
+        return;
     }
 
     /**
