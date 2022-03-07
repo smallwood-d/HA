@@ -83,15 +83,60 @@ import { HADB } from './db';
     /**
      * reutne all the images in the DB.
      */
-    public getAllImages(): Promise<image[]> {
-        return;
+    public getAllImages(offset?: number, limit?: number): Promise<any[]> {
+        const aggregateQuery: Record<string, unknown>[] = 
+        [ 
+            { "$match": {} },
+            {
+                "$project": {
+                    "_id": 0
+                }
+            }
+        ];
+            
+        offset && aggregateQuery.push({ $skip: offset });
+        limit && aggregateQuery.push({ $limit: limit });
+
+        const result = this.client.db(this.db)
+            .collection('images')
+            .aggregate(aggregateQuery);
+        return result.toArray();
     }
 
     /**
      * combination of all the images
      */
-    public getCombo(): Promise<image[]> {
-        return;
+    public getCombo(): Promise<any[]> {
+        const aggregateQuery: Record<string, unknown>[] = 
+        [ 
+            {$group:{
+                "_id":"",
+                "id":{
+                    $push : "$id"
+                }
+            }},
+            {$project:{"id":1,"_id":0, 
+            "new": {$reduce:{
+                input:{$range:[0,{$size:"$id"}]}, 
+                initialValue:[], 
+                in:{$concatArrays:[ 
+                   "$$value", 
+                   {$let:{
+                      vars:{i:"$$this"},
+                      in:{$map:{
+                         input:{$range:[{$add:[1,"$$i"]},{$size:"$id"}]},
+                         in:[ {$arrayElemAt:["$id","$$i"]}, {$arrayElemAt:["$id","$$this"]}] }}
+                   }}
+                ]}
+             }}
+            }}
+            
+        ];
+
+        const result = this.client.db(this.db)
+            .collection('images')
+            .aggregate(aggregateQuery);
+        return result.toArray();
     }
     
     /**
@@ -121,21 +166,41 @@ import { HADB } from './db';
      * @returns 
      */
     public createDeploymenyt(d: deployment): Promise<boolean> {
-        return this.create(d, "deploymnent");
+        return this.create(d, "deployment");
     }
     
     /**
      * return all the deployments
      */
-    public getAllDeployments(): Promise<deployment[]> {
-        return;
+    public getAllDeployments(offset?: number, limit?: number): Promise<any[]> {
+        const aggregateQuery: Record<string, unknown>[] = 
+        [ 
+            { "$match": {} },
+            {
+                "$project": {
+                    "imageID": 1,
+                    "_id": 0
+                }
+            }
+        ];
+            
+        offset && aggregateQuery.push({ $skip: offset });
+        limit && aggregateQuery.push({ $limit: limit });
+
+        const result = this.client.db(this.db)
+            .collection('deployment')
+            .aggregate(aggregateQuery);
+        return result.toArray();
+
     }
     
     /**
      * retuen number of deployments in the DB.
      */
-    public countDeployment(): Promise<number> {
-        return;
+    public async countDeployment(): Promise<number> {
+        const result = await this.client.db(this.db)
+            .collection("deployment").count({});
+        return result;
     }
 
     /**

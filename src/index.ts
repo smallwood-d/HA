@@ -1,8 +1,11 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
+import bodyParser from "body-parser";
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import { sysRouterInit } from "./routes/system";
+import { HARouterInit } from "./routes/routes";
+import { DB } from "./db/mongo";
 
 
 const app = express();
@@ -21,13 +24,18 @@ async function server() {
             version: '1.0.0',
             },
         },
-        apis: ['./src/routes/*.js'], // files containing annotations as above
+        apis: ['./src/routes/**/*'], // files containing annotations as above
         };
 
     const openapiSpecification = swaggerJsdoc(options);
 
+    const db = new DB();
+    db.setDB("ha");
+    await db.connect();
+
     app.use(sysRouterInit());
-    app.use('/api-docs', swaggerUi.setup(openapiSpecification));
+    app.use(HARouterInit(db));
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 
 
 
